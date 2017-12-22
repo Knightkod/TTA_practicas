@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="eus.ehu.tta.practica1.activity_menu">
+
+    <TextView
+        android:id="@+id/menu_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/menuTitle"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lessonTitle"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/buttonNewTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/menuButton1"
+        android:onClick="test"/>
+
+    <Button
+        android:id="@+id/buttonNewExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/menuButton2"
+        android:onClick="exercise"/>
+
+    <Button
+        android:id="@+id/buttonSeguimiento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/menuButton3"
+        android:onClick="seguimiento"/>
+
+
+</LinearLayout>
