@@ -7,8 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import Modelo.ServerConnection;
 
-public class MainActivity extends AppCompatActivity /*implements serverConnectionInterface*/{
+public class MainActivity extends AppCompatActivity{
 
 
     @Override
@@ -21,12 +22,13 @@ public class MainActivity extends AppCompatActivity /*implements serverConnectio
         Intent intent = new Intent(this,MenuActivity.class);
         String login = ((EditText)findViewById(R.id.user)).getText().toString();
         String passwd = ((EditText)findViewById(R.id.passwd)).getText().toString();
-        /*if(autenticar(login,passwd)){
+        ServerConnection srvConn=new ServerConnection();
+        if(srvConn.verificaLogin(login,passwd)){
             intent.putExtra(MenuActivity.LOGIN_ID,login);
             startActivity(intent);
         }
         else{
             Toast.makeText(getApplicationContext(),R.string.loginError,Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 }
