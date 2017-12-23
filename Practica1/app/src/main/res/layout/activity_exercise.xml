@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="eus.ehu.tta.practica1.ExerciseActivity">
-<TextView
+    <TextView
     android:id="@+id/exercise_wording"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

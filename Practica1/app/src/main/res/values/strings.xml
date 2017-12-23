@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Practica1</string>
     <string name="activity1Title">Alumno de TTA</string>
-    <string name="user">Usuario</string>
+    <string name="user">Introduce DNI</string>
     <string name="contrasena">Introduce contraseña</string>
     <string name="loginButton">Acceder</string>
     <string name="loginError">Error al intentar loguearse</string>
@@ -14,15 +14,10 @@
     <string name="menuButton3">Seguimiento</string>
 
     <string name="activity3Title">Nuevo Test</string>
-    <string name="testQuestion">¿Cual de las siguientes opciones
-        NO se indica en el fichero de manifiesto de la app?</string>
-    <string name="testOption1">Versión de la aplicación</string>
-    <string name="testOption2">Listado de componentes de la aplicación</string>
-    <string name="testOption3">Opciones del menú de ajustes</string>
-    <string name="testOption4">Nivel mínimo de la API Android requerida</string>
-    <string name="testOption5">Nombre del paquete java de la aplicación</string>
     <string name="button_send">Enviar</string>
     <string name="button_help">Ver ayuda</string>
+    <string name="testError">Errooooor</string>
+    <string name="testOk">Acierto!</string>
 
     <string name="activity4Title">Nuevo Ejercicio</string>
     <string name="buttonUploadFile">Subir Fichero</string>
