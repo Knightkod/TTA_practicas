@@ -3,11 +3,11 @@ package eus.ehu.tta.practica1;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class activity_menu extends AppCompatActivity {
+public class ExerciseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_exercise);
     }
 }

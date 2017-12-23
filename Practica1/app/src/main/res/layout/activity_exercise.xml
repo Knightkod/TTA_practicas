@@ -5,41 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="eus.ehu.tta.practica1.MenuActivity">
-
-    <TextView
-        android:id="@+id/menu_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="@dimen/menuTitle"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/lessonTitle"
-        android:gravity="center"/>
-
+    tools:context="eus.ehu.tta.practica1.ExerciseActivity">
+<TextView
+    android:id="@+id/exercise_wording"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
     <Button
-        android:id="@+id/buttonNewTest"
+        android:id="@+id/button_send_file"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menuButton1"
-        android:onClick="test"/>
-
+        android:text="@string/buttonUploadFile"
+        android:onClick="sendFile"/>
     <Button
-        android:id="@+id/buttonNewExercise"
+        android:id="@+id/button_take_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menuButton2"
-        android:onClick="exercise"/>
-
+        android:text="@string/buttonTakePhoto"
+        android:onClick="takePhoto"/>
     <Button
-        android:id="@+id/buttonSeguimiento"
+        android:id="@+id/button_record_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menuButton3"
-        android:onClick="seguimiento"/>
-
-
+        android:text="@string/buttonRecordAudio"
+        android:onClick="recordAudio"/>
+    <Button
+        android:id="@+id/button_record_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/buttonRecordVideo"
+        android:onClick="recordVideo"/>
 </LinearLayout>
