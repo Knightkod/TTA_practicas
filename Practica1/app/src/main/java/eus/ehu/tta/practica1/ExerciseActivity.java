@@ -112,6 +112,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 srvConnection.enviaFichero(data.getData());
                 break;
             case PICTURE_REQUEST_CODE:
+                Toast.makeText(getApplicationContext(),("guardada!"),Toast.LENGTH_SHORT).show();
                 srvConnection.enviaFichero(pictureUri);
                 break;
         }
