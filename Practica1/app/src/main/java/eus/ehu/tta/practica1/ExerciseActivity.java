@@ -56,7 +56,6 @@ public class ExerciseActivity extends AppCompatActivity {
                 File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                 try {
                     File file = File.createTempFile("ttaImage", ".jpg", dir);
-                    System.out.println("Nombre3: ");
                     pictureUri = Uri.fromFile(file);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
                     startActivityForResult(intent, PICTURE_REQUEST_CODE);

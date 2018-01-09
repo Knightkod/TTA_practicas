@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
 
-   
 
     <application
         android:allowBackup="true"
@@ -19,21 +18,22 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/activity1Title">
-
-        </activity>
-        <activity android:name=".MenuActivity" android:label="@string/activity2Title"></activity>
-        <activity
-            android:name=".TestActivity"
-            android:label="@string/activity3Title" >
-        </activity>
-        <activity
-            android:name=".ExerciseActivity"
-            android:label="@string/activity4Title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/activity2Title"></activity>
+        <activity
+            android:name=".TestActivity"
+            android:label="@string/activity3Title"></activity>
+        <activity
+            android:name=".ExerciseActivity"
+            android:label="@string/activity4Title">
+
         </activity>
     </application>
 
