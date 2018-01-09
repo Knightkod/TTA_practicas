@@ -1,5 +1,7 @@
 package Modelo;
 
+import android.net.Uri;
+
 import Interfaces.LoginInterface;
 /**
  * Created by iubuntu on 23/12/17.
@@ -17,5 +19,10 @@ public class ServerConnection implements LoginInterface {
                 verification=true;
         }
         return verification;
+    }
+
+    @Override
+    public void enviaFichero(Uri uri){
+
     }
 }

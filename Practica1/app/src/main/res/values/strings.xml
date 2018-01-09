@@ -26,5 +26,8 @@
     <string name="buttonRecordVideo">Grabar video</string>
 
     <string name="noFunction">Funcionalidad aun no disponible</string>
+    <string name="noCamera">No existe una cámara en este movil, por lo que no puede realizarse esta acción.</string>
+    <string name="noMicro">No existe un microfono en este movil, por lo que no puede realizarse esta acción.</string>
 
+    <string name="noApp">No existe una una aplicacion para realizar esta acción.</string>
 </resources>
