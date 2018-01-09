@@ -1,34 +1,36 @@
 package eus.ehu.tta.practica1;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import Modelo.Test;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener{
-    private String advise="<p>The manifest describes the components of  the application: the activities," +
-            "services, broadcast receivers, and content providers that the application is composed of." +
-            "It names the classes that implement each of the components and publishes their capabilities" +
-            " (for example, which iIntent messages they can handle). These declarations let the Android" +
-            "system know that the components are and under that conditions that can be launched </p>";
-    RadioGroup group;
-    private int correct;
+    private RadioGroup group;
+    private Test test;
+    private int correct=0;
+    private int selected=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        Test test = new Test();
+        test = new Test();
         TextView textWording = (TextView)findViewById(R.id.test_wording);
         textWording.setText(test.getEnunciado());
         group = (RadioGroup)findViewById(R.id.test_choices);
@@ -52,8 +54,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void sendTest(View v){
-        int selected = group.getCheckedRadioButtonId()-1;
+        selected = group.getCheckedRadioButtonId()-1;
         int choices = group.getChildCount();
+
         for(int i = 0;i<choices;i++){
             group.getChildAt(i).setEnabled(false);
         }
@@ -63,7 +66,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         if(selected!=correct){
             group.getChildAt(selected).setBackgroundColor(Color.RED);
             Toast.makeText(getApplicationContext(), R.string.testError,Toast.LENGTH_SHORT).show();
-            if(advise!=null && !advise.isEmpty())
+
+            if(test.getChoices().get(selected).getHelpResource()!=null)
                 findViewById(R.id.button_send_help).setVisibility(View.VISIBLE);
         }
         else
@@ -73,14 +77,69 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     public void sendHelp(View v){
         findViewById(R.id.button_send_help).setEnabled(false);
-        WebView web = new WebView(this);
-        web.loadData(advise,"text/html",null);
-        web.setBackgroundColor(Color.TRANSPARENT);
-        web.setLayerType(WebView.LAYER_TYPE_SOFTWARE,null);
 
-        ViewGroup layout = (ViewGroup) v.getParent();
-        layout.addView(web);
+        String helpType= test.getChoices().get(selected).getHelpMimeType();
+        String helpResource=test.getChoices().get(selected).getHelpResource();
+        System.out.println(helpType+" tipo de formato");
+        if(helpType.equals("text/html"))
+            viewHtmlHelp(helpResource,v);
+        if(helpType.equals("video"))
+            viewVideoHelp(helpResource,v);
+        if(helpType.equals("audio"))
+            viewAudioHelp(helpResource,v);
+
 
     }
+
+    private void viewHtmlHelp(String resource, View v){
+        if(resource.substring(0,10).contains("://")){
+            Uri uri = Uri.parse(resource);
+            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(intent);
+        }else {
+            WebView web = new WebView(this);
+            web.loadData(resource, "text/html", null);
+            web.setBackgroundColor(Color.TRANSPARENT);
+            web.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+
+            ViewGroup layout = (ViewGroup) v.getParent();
+            layout.addView(web);
+        }
+    }
+
+    private void viewVideoHelp(String resource, View v){
+        VideoView videoView = new VideoView(this);
+        videoView.setVideoURI(Uri.parse(resource));
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        videoView.setLayoutParams(layoutParams);
+
+        MediaController mediaController = new MediaController(this){
+            @Override
+            public void hide(){
+
+            }
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent keyEvent){
+                if(keyEvent.getKeyCode()==KeyEvent.KEYCODE_BACK)
+                    finish();
+                return super.dispatchKeyEvent(keyEvent);
+
+            }
+
+        };
+
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
+
+        ViewGroup layout = (ViewGroup) v.getParent();
+        layout.addView(videoView);
+        videoView.start();
+    }
+
+    private void viewAudioHelp(String resource, View v){
+
+    }
+
 
 }

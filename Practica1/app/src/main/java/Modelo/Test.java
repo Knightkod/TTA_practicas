@@ -15,16 +15,46 @@ public class Test {
     private String opc4="Nivel mínimo de la API android requerida";
     private String opc5="Nombre del paquete java de la aplicación";
 
+    private String advise="<p>The manifest describes the components of  the application: the activities," +
+            "services, broadcast receivers, and content providers that the application is composed of." +
+            "It names the classes that implement each of the components and publishes their capabilities" +
+            " (for example, which iIntent messages they can handle). These declarations let the Android" +
+            "system know that the components are and under that conditions that can be launched </p>";
+
+
     private List<Choice> Choices = new ArrayList<Choice>();
+
+    public Test(){
+        Choices.clear();
+        //para probar, estos valores se recogerían del servidor
+        String[] str = {opc1,opc2,opc3,opc4,opc5};
+        boolean[] boolArray={false,false,true,false,false};
+        String[] mimeTypeArray={"video","audio",null,"text/html","text/html"};
+        String[] helpResourceArray={
+                "http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4",
+                "http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4",
+                null,
+                "http://google.es",
+                advise
+        };
+        for(int i=0;i<str.length;i++){
+            Choice choice = new Choice(str[i],boolArray[i],mimeTypeArray[i],helpResourceArray[i]);
+            Choices.add(choice);
+        }
+    }
 
     public class Choice{
 
         private String opcText;
         private boolean isCorrect;
+        private String helpMimeType = "";
+        private String helpResource="";
 
-        public Choice(String opcText,boolean isCorrect){
+        public Choice(String opcText,boolean isCorrect, String helpMimeType,String helpResource){
             this.opcText=opcText;
             this.isCorrect=isCorrect;
+            this.helpMimeType=helpMimeType;
+            this.helpResource=helpResource;
         }
 
         public String getOpcText() {
@@ -34,17 +64,18 @@ public class Test {
         public boolean isCorrect(){
             return isCorrect;
         }
+
+        public String getHelpMimeType() {
+            return helpMimeType;
+        }
+
+        public String getHelpResource(){
+            return helpResource;
+        }
     }
 
     public List<Choice> getChoices() {
-        Choices.clear();
-        //para probar, estos valores se recogerían del servidor
-        String[] str = {opc1,opc2,opc3,opc4,opc5};
-        boolean[] boolArray={false,false,true,false,false};
-        for(int i=0;i<str.length;i++){
-            Choice choice = new Choice(str[i],boolArray[i]);
-            Choices.add(choice);
-        }
+
         return Choices;
     }
 
