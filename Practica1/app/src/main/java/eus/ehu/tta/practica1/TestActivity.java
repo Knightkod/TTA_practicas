@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -18,9 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.io.IOException;
+
+import Modelo.AudioPlayer;
 import Modelo.Test;
 
-public class TestActivity extends AppCompatActivity implements View.OnClickListener{
+public class TestActivity extends AppCompatActivity implements View.OnClickListener, Runnable{
     private RadioGroup group;
     private Test test;
     private int correct=0;
@@ -138,8 +142,22 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void viewAudioHelp(String resource, View v){
-
+        LinearLayout linearLayout = new LinearLayout(this);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        linearLayout.setLayoutParams(layoutParams);
+        AudioPlayer audioPlayer= new AudioPlayer(linearLayout,this);
+        try {
+            audioPlayer.setAudioUri(Uri.parse(resource));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ViewGroup layout = (ViewGroup) v.getParent();
+        layout.addView(linearLayout);
     }
 
 
+    @Override
+    public void run() {
+        this.finish();
+    }
 }
