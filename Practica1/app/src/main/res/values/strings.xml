@@ -30,4 +30,7 @@
     <string name="noMicro">No existe un microfono en este movil, por lo que no puede realizarse esta acción.</string>
 
     <string name="noApp">No existe una una aplicacion para realizar esta acción.</string>
+
+    <string name="connecting">Conectando...</string>
+    <string name="baseUrl">http://u017633.ehu.eus:28080/ServidorTta/rest/tta</string>
 </resources>
