@@ -36,7 +36,7 @@ public class ServerConnection implements LoginInterface {
         boolean verification = false;
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-
+            restClient.setHttpBasicAuth(user,password);
 
             verification = true;
 
@@ -55,12 +55,12 @@ public class ServerConnection implements LoginInterface {
     }
 
     @Override
-    public Test getTest(String jsonString) {
+    public Test getTest(int id) {
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
                 Test test = new Test();
-                JSONObject json = new JSONObject(jsonString);
+               JSONObject json = restClient.getJson(String.format("getExercise?id=%d", id));
                 test.setEnunciado(json.getString("wording"));
                 JSONArray array = json.getJSONArray("choices");
                 for (int i = 0; i < array.length(); i++) {
@@ -76,6 +76,8 @@ public class ServerConnection implements LoginInterface {
                 return test;
             } catch (JSONException e) {
                 return null;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return null;

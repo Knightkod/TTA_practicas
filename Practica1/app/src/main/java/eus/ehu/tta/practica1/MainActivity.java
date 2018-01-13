@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity{
         Intent intent = new Intent(this,MenuActivity.class);
         String login = ((EditText)findViewById(R.id.user)).getText().toString();
         String passwd = ((EditText)findViewById(R.id.passwd)).getText().toString();
-        ServerConnection srvConn=new ServerConnection();
+        ServerConnection srvConn=new ServerConnection(this,Integer.toString(R.string.baseUrl));
         if(srvConn.verificaLogin(login,passwd)){
             intent.putExtra(MenuActivity.LOGIN_ID,login);
             startActivity(intent);

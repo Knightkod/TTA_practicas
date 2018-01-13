@@ -37,7 +37,7 @@ public class ExerciseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exercise);
         TextView textView = (TextView) findViewById(R.id.exercise_wording);
         textView.setText(exercise.getEnunciado());
-        srvConnection = new ServerConnection();
+        srvConnection = new ServerConnection(this, Integer.toString(R.string.baseUrl));
     }
 
     public void sendFile(View v) {
