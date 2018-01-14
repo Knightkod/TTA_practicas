@@ -20,6 +20,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import Modelo.AudioPlayer;
 import Modelo.Test;
@@ -30,14 +31,19 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private int correct=0;
     private int selected=0;
 
+    public static final String TEST_ID="testID";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        test = new Test();
+
+        Intent intent = getIntent();
+        test = (Test) intent.getSerializableExtra(TEST_ID);
         TextView textWording = (TextView)findViewById(R.id.test_wording);
         textWording.setText(test.getEnunciado());
         group = (RadioGroup)findViewById(R.id.test_choices);
+
         int i = 0;
         for (Test.Choice choice : test.getChoices()){
             RadioButton radio = new RadioButton(this);
@@ -55,10 +61,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v){
         findViewById(R.id.button_send_test).setVisibility(View.VISIBLE);
+        selected = group.indexOfChild(v);
     }
 
     public void sendTest(View v){
-        selected = group.getCheckedRadioButtonId()-1;
+
         int choices = group.getChildCount();
 
         for(int i = 0;i<choices;i++){
@@ -67,7 +74,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         ViewGroup layout = (ViewGroup) v.getParent();
         layout.removeView(findViewById(R.id.button_send_test));
         group.getChildAt(correct).setBackgroundColor(Color.GREEN);
-        if(selected!=correct){
+        if((selected)!=correct){
             group.getChildAt(selected).setBackgroundColor(Color.RED);
             Toast.makeText(getApplicationContext(), R.string.testError,Toast.LENGTH_SHORT).show();
 
@@ -84,12 +91,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         String helpType= test.getChoices().get(selected).getHelpMimeType();
         String helpResource=test.getChoices().get(selected).getHelpResource();
-        System.out.println(helpType+" tipo de formato");
         if(helpType.equals("text/html"))
             viewHtmlHelp(helpResource,v);
-        if(helpType.equals("video"))
+        if(helpType.equals("video/mp4"))
             viewVideoHelp(helpResource,v);
-        if(helpType.equals("audio"))
+        if(helpType.equals("audio/mpeg"))
             viewAudioHelp(helpResource,v);
 
 
