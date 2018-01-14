@@ -1,15 +1,24 @@
 package Modelo;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import Interfaces.LoginInterface;
 import eus.ehu.tta.practica1.R;
@@ -22,8 +31,8 @@ public class ServerConnection implements LoginInterface {
 
     public static final int EXTRA_TEST = 1;
     private Context context = null;
-    ConnectivityManager connMng = null;
-    RestClient restClient;
+    private ConnectivityManager connMng = null;
+    private RestClient restClient;
 
     public ServerConnection(Context context, String baseUrl) {
         this.context = context;
@@ -61,21 +70,69 @@ public class ServerConnection implements LoginInterface {
 
 
     @Override
-    public void enviaFichero(Uri uri) {
+    public void enviaFichero(int exerciseId, int userId, Uri uri, String user, String passwd){
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
+            InputStream is=null;
+            String fileName=null;
+            if(uri.toString().startsWith("file")){
+                try {
+                    is=new FileInputStream(uri.toString().substring(7));
+                    String[] pathSections=uri.toString().split("/");
+                    fileName=pathSections[pathSections.length-1];
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                try {
+                    is=context.getContentResolver().openInputStream(uri);
+                    fileName=infoFichero(uri).get(0);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            if(is != null && !fileName.isEmpty() && fileName!=null)
+            try {
+                restClient.setHttpBasicAuth(user, passwd);
+                int code = restClient.postFile(String.format("postExercise?user%d&id=%d",userId,exerciseId),is,fileName);
+                System.out.println(code);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
     }
+    private List<String> infoFichero(Uri uri){
+        Cursor cursor = context.getContentResolver().query(uri,null,null,null,null,null);
+        List<String> str=new ArrayList<String>();
+        if(cursor != null && cursor.moveToFirst()){
+            String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+            String size = null;
+            if(!cursor.isNull(sizeIndex))
+                size=cursor.getString(sizeIndex);
+            else
+                size="Unknown";
+
+            str.add(displayName);
+            str.add(size);
+
+            cursor.close();
+        }
+        return str;
+    }
 
     @Override
-    public Test getTest(int id) {
+    public Test getTest(int id, String user, String passwd) {
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
 
             try {
-            //TODO esto tiene que ser programatico... no hardcodeado como aqui
-            restClient.setHttpBasicAuth("12345678A", "tta");
+
+            restClient.setHttpBasicAuth(user, passwd);
             Test test = new Test();
             JSONObject json = restClient.getJson(String.format("getTest?id=%d", id));
                test.setEnunciado(json.getString("wording"));
@@ -137,10 +194,11 @@ public class ServerConnection implements LoginInterface {
     }
 
     @Override
-    public Exercise getExercise(int id) {
+    public Exercise getExercise(int id, String user, String passwd) {
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
+                restClient.setHttpBasicAuth(user, passwd);
                 JSONObject jsonObject = restClient.getJson(String.format("getExercise?id=%d", id));
                 Exercise exercise = new Exercise();
                 exercise.setId(jsonObject.getInt("id"));
@@ -158,14 +216,18 @@ public class ServerConnection implements LoginInterface {
     }
 
     @Override
-    public void uploadChoice(int userId, int choiceId) {
+    public void uploadChoice(int userId, int choiceId, String user, String passwd) {
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             JSONObject jsonObject = new JSONObject();
             try {
+                restClient.setHttpBasicAuth(user, passwd);
                 jsonObject.put("userId", userId);
                 jsonObject.put("choiceId", choiceId);
-                restClient.postJson(jsonObject, "postChoice");
+                int code = restClient.postJson(jsonObject, "postChoice");
+
+
+                    System.out.println("Code: "+code);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -173,4 +235,6 @@ public class ServerConnection implements LoginInterface {
             }
         }
     }
+
+
 }

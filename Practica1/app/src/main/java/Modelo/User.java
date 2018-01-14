@@ -9,10 +9,14 @@ import java.io.Serializable;
 public class User implements Serializable{
     private int id=0;
     String user = "";
+    String dni="";
+    String passwd="";
     String lessonNumber="";
     String lessonTitle="";
     int nextTest=0;
     int nextExercise=0;
+
+
 
     public int getId() {
         return id;
@@ -24,6 +28,22 @@ public class User implements Serializable{
 
     public String getUser() {
         return user;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
     }
 
     public void setUser(String user) {

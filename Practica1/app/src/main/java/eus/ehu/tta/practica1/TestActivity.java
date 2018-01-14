@@ -3,10 +3,8 @@ package eus.ehu.tta.practica1;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +18,23 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import Modelo.AudioPlayer;
+import Modelo.ProgressTask;
+import Modelo.ServerConnection;
 import Modelo.Test;
+import Modelo.User;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener, Runnable{
     private RadioGroup group;
     private Test test;
+    private User user;
     private int correct=0;
     private int selected=0;
+    private ServerConnection srvConn;
 
     public static final String TEST_ID="testID";
+    public static final String USER="user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         test = (Test) intent.getSerializableExtra(TEST_ID);
+        user = (User) intent.getSerializableExtra(USER);
+        srvConn=new ServerConnection(this,getResources().getString(R.string.baseUrl));
         TextView textWording = (TextView)findViewById(R.id.test_wording);
         textWording.setText(test.getEnunciado());
         group = (RadioGroup)findViewById(R.id.test_choices);
@@ -84,6 +89,25 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         else
             Toast.makeText(getApplicationContext(), R.string.testOk, Toast.LENGTH_SHORT).show();
 
+        sendResults();
+
+    }
+
+    private void sendResults(){
+
+        new ProgressTask<Void>(this){
+            @Override
+            protected Void work() throws Exception {
+
+                srvConn.uploadChoice(user.getId(),test.getChoices().get(selected).getId(),user.getDni(),user.getPasswd());
+                return null;
+            }
+
+            @Override
+            protected void onFinish(Void result) {
+
+            }
+        }.execute();
     }
 
     public void sendHelp(View v){

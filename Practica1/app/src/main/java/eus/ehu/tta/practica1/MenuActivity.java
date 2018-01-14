@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
+import Modelo.Exercise;
 import Modelo.ProgressTask;
 import Modelo.ServerConnection;
 import Modelo.Test;
@@ -41,7 +42,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             protected Test work() throws Exception {
 
-                return srvConn.getTest(user.getNextTest());
+                return srvConn.getTest(user.getNextTest(),user.getDni(),user.getPasswd());
             }
 
             @Override
@@ -49,14 +50,31 @@ public class MenuActivity extends AppCompatActivity {
                 if(result!=null) {
                     Intent intent = new Intent(context, TestActivity.class);
                     intent.putExtra(TestActivity.TEST_ID, result);
+                    intent.putExtra(TestActivity.USER,user);
                     startActivity(intent);
                 }
             }
         }.execute();
     }
     public void exercise(View v){
-        Intent intent = new Intent(this,ExerciseActivity.class);
-        startActivity(intent);
+        new ProgressTask<Exercise>(this){
+            @Override
+            protected Exercise work() throws Exception {
+
+                return srvConn.getExercise(user.getNextExercise(),user.getDni(),user.getPasswd());
+            }
+
+            @Override
+            protected void onFinish(Exercise result) {
+                if(result!=null) {
+                    Intent intent = new Intent(context, ExerciseActivity.class);
+                    intent.putExtra(ExerciseActivity.EXERCISE_ID, result);
+                    intent.putExtra(ExerciseActivity.USER,user);
+                    startActivity(intent);
+                }
+            }
+        }.execute();
+
     }
     public void seguimiento(View v){
         Toast.makeText(getApplicationContext(),R.string.noFunction,Toast.LENGTH_SHORT).show();

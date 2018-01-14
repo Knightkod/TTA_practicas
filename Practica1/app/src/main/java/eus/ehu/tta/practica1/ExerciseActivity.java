@@ -18,12 +18,23 @@ import java.io.File;
 import java.io.IOException;
 
 import Modelo.Exercise;
+import Modelo.ProgressTask;
 import Modelo.ServerConnection;
+import Modelo.Test;
+import Modelo.User;
 
 public class ExerciseActivity extends AppCompatActivity {
 
     ServerConnection srvConnection;
     private Exercise exercise = new Exercise();
+
+    private User user;
+    private Uri uri;
+    private ServerConnection srvConn=null;
+
+    public static final String EXERCISE_ID = "exercise";
+    public static final String USER="user";
+
     public static final int PICTURE_REQUEST_CODE = 1;
     public static final int VIDEO_REQUEST_CODE = 2;
     public static final int AUDIO_REQUEST_CODE = 3;
@@ -35,9 +46,13 @@ public class ExerciseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
+        Intent intent = getIntent();
+        exercise = (Exercise) intent.getSerializableExtra(EXERCISE_ID);
+        user = (User) intent.getSerializableExtra(USER);
         TextView textView = (TextView) findViewById(R.id.exercise_wording);
         textView.setText(exercise.getEnunciado());
-        srvConnection = new ServerConnection(this, Integer.toString(R.string.baseUrl));
+        srvConnection = new ServerConnection(this, getResources().getString(R.string.baseUrl));
     }
 
     public void sendFile(View v) {
@@ -103,32 +118,30 @@ public class ExerciseActivity extends AppCompatActivity {
             return;
         switch (requestCode) {
             case READ_REQUEST_CODE:
-                infoFichero(data.getData());
-                break;
             case VIDEO_REQUEST_CODE:
             case AUDIO_REQUEST_CODE:
-                Toast.makeText(getApplicationContext(),("guardado!"),Toast.LENGTH_SHORT).show();
-                srvConnection.enviaFichero(data.getData());
+               uri=data.getData();
                 break;
             case PICTURE_REQUEST_CODE:
-                Toast.makeText(getApplicationContext(),("guardada!"),Toast.LENGTH_SHORT).show();
-                srvConnection.enviaFichero(pictureUri);
+                uri=pictureUri;
                 break;
+        }
+        if(uri!=null) {
+            new ProgressTask<Void>(this){
+                @Override
+                protected Void work() throws Exception {
+                    srvConnection.enviaFichero(exercise.getId(), user.getId(), uri, user.getDni(), user.getPasswd());
+                    return null;
+                }
+
+                @Override
+                protected void onFinish(Void result) {
+                }
+            }.execute();
+
         }
     }
 
-    private void infoFichero(Uri uri){
-        Cursor cursor = this.getContentResolver().query(uri,null,null,null,null,null);
-        if(cursor != null && cursor.moveToFirst()){
-            String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-            int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-            String size = null;
-            if(!cursor.isNull(sizeIndex))
-                size=cursor.getString(sizeIndex);
-            else
-                size="Unknown";
-            Toast.makeText(getApplicationContext(),("Nombre: "+displayName+", y tamaño: "+size),Toast.LENGTH_SHORT).show();
-        }
-    }
+
 
 }

@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity{
             protected void onFinish(User result) {
                 if(result!=null) {
                     Intent intent = new Intent(context, MenuActivity.class);
+                    result.setDni(login);
+                    result.setPasswd(passwd);
                     intent.putExtra(MenuActivity.LOGIN_ID, result);
                     startActivity(intent);
                 }

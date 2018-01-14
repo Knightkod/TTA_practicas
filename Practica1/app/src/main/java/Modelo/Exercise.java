@@ -1,10 +1,12 @@
 package Modelo;
 
+import java.io.Serializable;
+
 /**
  * Created by iubuntu on 23/12/17.
  */
 
-public class Exercise {
+public class Exercise implements Serializable{
 
     private String enunciado="Explica cómo aplicarías el patrón de diseño MVP en el desarrollo de una app para Android";
     private String fileUrl="";
