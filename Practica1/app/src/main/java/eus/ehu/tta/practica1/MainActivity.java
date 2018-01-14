@@ -7,10 +7,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.Serializable;
+
+import Modelo.ProgressTask;
 import Modelo.ServerConnection;
+import Modelo.Test;
+import Modelo.User;
 
 public class MainActivity extends AppCompatActivity{
-
+    private ServerConnection srvConn;
+    String login ="";
+    String passwd="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,16 +27,25 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void login(View v){
-        Intent intent = new Intent(this,MenuActivity.class);
-        String login = ((EditText)findViewById(R.id.user)).getText().toString();
-        String passwd = ((EditText)findViewById(R.id.passwd)).getText().toString();
-        ServerConnection srvConn=new ServerConnection(this,Integer.toString(R.string.baseUrl));
-        if(srvConn.verificaLogin(login,passwd)){
-            intent.putExtra(MenuActivity.LOGIN_ID,login);
-            startActivity(intent);
-        }
-        else{
-            Toast.makeText(getApplicationContext(),R.string.loginError,Toast.LENGTH_SHORT).show();
-        }
+        login = ((EditText)findViewById(R.id.user)).getText().toString();
+        passwd = ((EditText)findViewById(R.id.passwd)).getText().toString();
+        srvConn=new ServerConnection(this,getResources().getString(R.string.baseUrl));
+
+        new ProgressTask<User>(this){
+            @Override
+            protected User work() throws Exception {
+                return srvConn.verificaLogin(login,passwd);
+            }
+
+            @Override
+            protected void onFinish(User result) {
+                if(result!=null) {
+                    Intent intent = new Intent(context, MenuActivity.class);
+                    intent.putExtra(MenuActivity.LOGIN_ID, result);
+                    startActivity(intent);
+                }
+            }
+        }.execute();
+
     }
 }

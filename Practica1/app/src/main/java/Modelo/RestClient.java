@@ -47,7 +47,7 @@ public class RestClient {
     }
 
     private HttpURLConnection getConnection(String path) throws IOException {
-        URL url = new URL(String.format("%s:%s",baseUrl,path));
+        URL url = new URL(String.format("%s/%s",baseUrl,path));
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
         for(Map.Entry<String,String> property : properties.entrySet()){

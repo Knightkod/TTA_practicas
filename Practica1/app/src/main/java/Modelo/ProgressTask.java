@@ -19,7 +19,7 @@ public abstract class ProgressTask<T> extends AsyncTask<Void,Void,T> {
     public ProgressTask(Context context){
         this.context=context;
         dialog = new ProgressDialog(context);
-        dialog.setMessage(Integer.toString(R.string.connecting));
+        dialog.setMessage(context.getResources().getString(R.string.connecting));
     }
 
 
@@ -32,6 +32,7 @@ public abstract class ProgressTask<T> extends AsyncTask<Void,Void,T> {
     protected T doInBackground(Void... params) {
         T result = null;
         try {
+
             result = work();
         }
         catch (Exception e) {

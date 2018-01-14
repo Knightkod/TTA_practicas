@@ -8,41 +8,49 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 import Modelo.ProgressTask;
 import Modelo.ServerConnection;
 import Modelo.Test;
+import Modelo.User;
 
 public class MenuActivity extends AppCompatActivity {
     public static final String LOGIN_ID="login";
-    ServerConnection srvConn;
-    Context context;
+    private ServerConnection srvConn;
+    private Context context;
+    public User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
         Intent intent = getIntent();
+        user=(User) intent.getSerializableExtra(LOGIN_ID);
         TextView textLogin = (TextView) findViewById(R.id.menu_login);
+        textLogin.setText(getString(R.string.welcome)+" "+user.getUser());
 
-        textLogin.setText(getString(R.string.welcome)+" "+(intent.getStringExtra(LOGIN_ID)));
-        srvConn=new ServerConnection(this,Integer.toString(R.string.baseUrl));
+        TextView menuTitle = (TextView) findViewById(R.id.menu_title);
+        menuTitle.setText(user.getLessonNumber()+": "+user.getLessonTitle());
+        srvConn=new ServerConnection(this,getResources().getString(R.string.baseUrl));
         context=this;
 
     }
     public void test(View v){
         new ProgressTask<Test>(this){
-
             @Override
             protected Test work() throws Exception {
 
-                return srvConn.getTest(1);
+                return srvConn.getTest(user.getNextTest());
             }
 
             @Override
             protected void onFinish(Test result) {
-
-                Intent intent = new Intent(context,TestActivity.class);
-                startActivity(intent);
+                if(result!=null) {
+                    Intent intent = new Intent(context, TestActivity.class);
+                    intent.putExtra(TestActivity.TEST_ID, result);
+                    startActivity(intent);
+                }
             }
         }.execute();
     }

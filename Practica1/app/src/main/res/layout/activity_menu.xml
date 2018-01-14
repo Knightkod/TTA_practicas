@@ -15,6 +15,7 @@
         android:textSize="@dimen/menuTitle"/>
 
     <TextView
+        android:id="@+id/menu_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/lessonTitle"

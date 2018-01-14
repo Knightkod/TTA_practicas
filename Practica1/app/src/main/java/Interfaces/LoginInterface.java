@@ -4,13 +4,14 @@ import android.net.Uri;
 
 import Modelo.Exercise;
 import Modelo.Test;
+import Modelo.User;
 
 /**
  * Created by iubuntu on 23/12/17.
  */
 
 public interface LoginInterface {
-    public abstract boolean verificaLogin(String user,String password);
+    public abstract User verificaLogin(String user, String password);
     public abstract void enviaFichero(Uri uri);
     public abstract Test getTest(int id);
     public abstract String putTest(Test test);

@@ -32,17 +32,31 @@ public class ServerConnection implements LoginInterface {
     }
 
     @Override
-    public boolean verificaLogin(String user, String password) {
+    public User verificaLogin(String dni, String password) {
         boolean verification = false;
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            restClient.setHttpBasicAuth(user,password);
+            restClient.setHttpBasicAuth(dni,password);
+            try {
+                JSONObject json=restClient.getJson(String.format("getStatus?dni=%s", dni));
+                User user = new User();
+                user.setId(json.getInt("id"));
+                user.setUser(json.getString("user"));
+                user.setLessonTitle(json.getString("lessonNumber"));
+                user.setLessonNumber(json.getString("lessonTitle"));
+                user.setNextTest(Integer.parseInt(json.getString("nextTest")));
+                user.setNextExercise(Integer.parseInt(json.getString("nextExercise")));
 
-            verification = true;
-
-
+                return user;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
-        return verification;
+        return null;
     }
 
 
@@ -58,28 +72,40 @@ public class ServerConnection implements LoginInterface {
     public Test getTest(int id) {
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
+
             try {
-                Test test = new Test();
-               JSONObject json = restClient.getJson(String.format("getExercise?id=%d", id));
-                test.setEnunciado(json.getString("wording"));
+            //TODO esto tiene que ser programatico... no hardcodeado como aqui
+            restClient.setHttpBasicAuth("12345678A", "tta");
+            Test test = new Test();
+            JSONObject json = restClient.getJson(String.format("getTest?id=%d", id));
+               test.setEnunciado(json.getString("wording"));
                 JSONArray array = json.getJSONArray("choices");
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject item = array.getJSONObject(i);
                     Test.Choice choice = new Test.Choice();
                     choice.setId(item.getInt("id"));
-                    choice.setOpcText(item.getString("wording"));
+                    choice.setOpcText(item.getString("answer"));
                     choice.setIsCorrect(item.getBoolean("correct"));
                     choice.setHelpResource(item.optString("advise", null));
-                    choice.setHelpMimeType(item.optString("mime", null));
+                    if(!item.isNull("resourceType")) {
+                        JSONObject resType = item.getJSONObject("resourceType");
+                        choice.setHelpMimeType(resType.getString("mime"));
+                    }
+                    else
+                        choice.setHelpMimeType(null);
                     test.getChoices().add(choice);
                 }
-                return test;
+
+              return test;
             } catch (JSONException e) {
                 return null;
             } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
         }
+
+
         return null;
     }
 

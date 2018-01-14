@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by iubuntu on 23/12/17.
  */
 
-public class Test {
+public class Test implements Serializable{
 
     private List<Choice> Choices = new ArrayList<Choice>();
 
@@ -17,7 +18,7 @@ public class Test {
         Choices.clear();
     }
 
-    public static class Choice {
+    public static class Choice implements Serializable{
 
         private int opcId = 0;
         private String opcText;
